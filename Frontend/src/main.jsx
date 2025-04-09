@@ -16,6 +16,10 @@ import ProtectedAdminRoute from './components/ProtectedAdminRoute.jsx';
 // Clerk API Key from environment variable
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
+if (!clerkPubKey) {
+  console.error("Clerk Publishable Key is missing in the environment variables.");
+}
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -38,29 +42,22 @@ const router = createBrowserRouter([
         element: <SignUpPage />,
       },
       {
-        path:'/signin',
-        element:<SignInPage/>
+        path:'api/v1/sign-up',
+        element:<SignInPage />
 
-      },
-       // Admin routes - protected by role check
-       {
-        element: <ProtectedAdminRoute />,
-        children: [
-          {
-            path: '/admin',
-            element: <AdminDashboard />
-          }
-        ]
       }
+
     ],
   },
 ]);
 
 
 createRoot(document.getElementById('root')).render(
+  <ClerkProvider publishableKey={clerkPubKey}>
   <StrictMode>
-    <ClerkProvider publishableKey={clerkPubKey}>
-      <RouterProvider router={router} />
-    </ClerkProvider>
+      <RouterProvider router={router}>
+        <App/>
+      </RouterProvider>
   </StrictMode>
+  </ClerkProvider>
 );

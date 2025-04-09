@@ -3,13 +3,15 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./DBConfig/dbConnect.js";
 
-
-import mainRouter from "./Routes/index.js";
-import eventRoutes from "./Routes/events.route.js";
-
+import userRoutes from "./Routes/user.route.js";
+import resourceRoutes from "./Routes/resource.route.js";
 import ApiError from "./API/ApiError.js";
 
 dotenv.config();
+
+console.log("Environment Variables Loaded:");
+console.log("MONGO_URI:", process.env.MONGO_URI);
+console.log("CLERK_API_KEY:", process.env.CLERK_API_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,11 +23,8 @@ app.get("/", (req, res) => {
   res.send("Welcome to GDSC Web Server!");
 });
 
-
-
-app.use("/api/v1", mainRouter);
-app.use("/api/v1/events", eventRoutes);
-
+app.use("/api/v1", userRoutes);
+app.use("/api/v1/resources", resourceRoutes);
 
 // Global error-handling middleware
 app.use((err, req, res, next) => {
